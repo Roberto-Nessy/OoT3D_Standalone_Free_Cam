@@ -3,7 +3,6 @@ This project allows new 3DS systems and Citra to control the camera in The Legen
 
 This project is still a WIP with the following planned features:
 
-* Better floor detection (sometimes you're kicked out of free cam when you shouldn't be with the current system)
 * JP version support (although the patch files are there they will currently crash as soon as you enter free cam)
 
 # Shoutouts
@@ -19,7 +18,7 @@ This project is still a WIP with the following planned features:
 # How to Use:
 * Find the patch files inside the "Patch Files" folder in this repository. They're divided by regional version of OoT3D (USA/EUR/JP) and by platform (3DS/Citra), so choose the correct ones.
 ### 3DS
-* Install a recent build of Luma3DS, or use the one linked above. If you already have Luma3DS, you can upgrade by simply replacing "boot.firm" at the root of your SD card.
+* Install a recent build of Luma3DS. If you already have Luma3DS, you can upgrade by simply replacing "boot.firm" at the root of your SD card.
 * Place the patch files ("code.ips" and "exheader.bin") in the following folder (you may need to create the folder):
 
 | Version | Location | Notes |
@@ -29,7 +28,7 @@ This project is still a WIP with the following planned features:
 | EUR | /luma/titles/0004000000033600 | |
 
 * Hold Select while powering on the console to launch the Luma3DS menu. Turn on "Enable game patching". You should only need to do this once, unless if you disable game patching in the future.
-* It should work now! If not, you likely need to use a different version of Luma3DS (try the one linked above).
+* It should work now! If not, you likely need to use a different version of Luma3DS.
 
 ### Citra Emulator
 * Right-click on OoT3D from the game list and select "Open Mods Location". Place the patch files ("code.ips" and "exheader.bin") there.
