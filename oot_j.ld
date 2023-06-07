@@ -16,6 +16,10 @@ SECTIONS
 		*(.patch_before_GlobalContext_Update)
 	}
 
+	.patch_after_GlobalContext_Update 0x45240C : {
+		*(.patch_after_GlobalContext_Update)
+	}
+
 	. = 0x4C99A8;
 	. = ALIGN(4);
 	.loader : {

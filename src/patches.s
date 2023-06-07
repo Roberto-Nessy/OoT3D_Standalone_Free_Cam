@@ -5,6 +5,11 @@
 before_GlobalContext_Update_patch:
     bl hook_before_GlobalContext_Update
 
+.section .patch_after_GlobalContext_Update
+.global after_GlobalContext_Update_patch
+after_GlobalContext_Update_patch:
+    b hook_after_GlobalContext_Update
+
 .section .patch_loader
 .global loader_patch
 loader_patch:

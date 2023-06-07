@@ -9,6 +9,18 @@ hook_before_GlobalContext_Update:
     cpy r7,r0
     bx lr
 
+.global hook_after_GlobalContext_Update
+hook_after_GlobalContext_Update:
+    push {r0-r12, lr}
+    bl after_GlobalContext_Update
+    pop {r0-r12, lr}
+.if _JP_==1
+    b 0x2E2108
+.else
+# both USA and EUR
+    b 0x2E25F0
+.endif
+
 .section .loader
 .global hook_into_loader
 hook_into_loader:

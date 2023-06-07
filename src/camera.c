@@ -1,10 +1,97 @@
 #include "z3D/z3D.h"
+#include "3ds/srv.h"
+#include "3ds/services/irrst.h"
 #include "common.h"
 #include "input.h"
+#include "draw.h"
 
 #define GyroDrawHUDIcon *(u8*)0x4FC648
 s16 pitch = 0, yaw = 0;
 f32 dist = 0;
+u8 spdOpt = 3, speed = 6, controls = 0, alertSpd = 0, alertCtr = 0;
+u8 speeds[] = { 2, 3, 4, 6, 8, 12, 16 };
+GlobalContext* gGlobalContext;
+
+void before_GlobalContext_Update(GlobalContext* globalCtx) {
+    static u8 init = 0;
+    if (!init) {
+        srvInit();
+        irrstInit();
+        gGlobalContext = globalCtx;
+        Draw_SetupFramebuffer();
+        init = 1;
+    }
+    Input_Update();
+
+    if (rInputCtx.cur.l && rInputCtx.cur.r) {
+        if (rInputCtx.pressed.d_up && spdOpt < 6) {
+            spdOpt++;
+            alertSpd = 30;
+        }
+        if (rInputCtx.pressed.d_down && spdOpt) {
+            spdOpt--;
+            alertSpd = 30;
+        }
+        speed = speeds[spdOpt];
+
+        if (rInputCtx.pressed.d_left) {
+            controls--;
+            alertCtr = 30;
+        }
+        if (rInputCtx.pressed.d_right) {
+            controls++;
+            alertCtr = 30;
+        }
+        controls &= 3;
+    }
+}
+
+void after_GlobalContext_Update(GlobalContext* globalCtx) {
+    if (alertCtr) {
+        alertCtr--;
+        switch (controls) {
+            case 0:
+                Draw_DrawFormattedStringTop(10, alertSpd ? 20 : 10, COLOR_WHITE, "Normal");
+                break;
+            case 1:
+                Draw_DrawFormattedStringTop(10, alertSpd ? 20 : 10, COLOR_WHITE, "Inverted X");
+                break;
+            case 2:
+                Draw_DrawFormattedStringTop(10, alertSpd ? 20 : 10, COLOR_WHITE, "Inverted Y");
+                break;
+            case 3:
+                Draw_DrawFormattedStringTop(10, alertSpd ? 20 : 10, COLOR_WHITE, "Both Inverted");
+                break;
+        }
+    }
+
+    if (alertSpd) {
+        alertSpd--;
+        switch (spdOpt) {
+            case 0:
+                Draw_DrawFormattedStringTop(10, 10, COLOR_WHITE, "|......");
+                break;
+            case 1:
+                Draw_DrawFormattedStringTop(10, 10, COLOR_WHITE, ".|.....");
+                break;
+            case 2:
+                Draw_DrawFormattedStringTop(10, 10, COLOR_WHITE, "..|....");
+                break;
+            case 3:
+                Draw_DrawFormattedStringTop(10, 10, COLOR_WHITE, "...|...");
+                break;
+            case 4:
+                Draw_DrawFormattedStringTop(10, 10, COLOR_WHITE, "....|..");
+                break;
+            case 5:
+                Draw_DrawFormattedStringTop(10, 10, COLOR_WHITE, ".....|.");
+                break;
+            case 6:
+                Draw_DrawFormattedStringTop(10, 10, COLOR_WHITE, "......|");
+                break;
+        }
+    }
+}
 
 f32 sins(u16 angle) {
     // Taylor expansion up to x^7. Use symmetries for larger angles.
@@ -199,8 +286,8 @@ void Camera_FreeCamUpdate(Vec3s* out, Camera* camera) {
         // TODO: options for inverted axes and sensitivity
         if (rInputCtx.cStick.dx * rInputCtx.cStick.dx + rInputCtx.cStick.dy * rInputCtx.cStick.dy > 900) {
             // Invert X input in mirror world
-            yaw -= rInputCtx.cStick.dx * 8 * ((gSaveContext.masterQuestFlag) ? -1 : 1);
-            pitch = Clamp(pitch + rInputCtx.cStick.dy * 8);
+            yaw -= rInputCtx.cStick.dx * speed * (((controls & 1) ^ gSaveContext.masterQuestFlag) ? -1 : 1);
+            pitch = Clamp(pitch + rInputCtx.cStick.dy * speed * ((controls & 2) ? -1 : 1));
         }
 
         // Set intended camera position

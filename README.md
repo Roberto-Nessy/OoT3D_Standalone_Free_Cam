@@ -1,9 +1,8 @@
 # OoT3D Free Cam
 This project allows new 3DS systems and Citra to control the camera in The Legend of Zelda: Ocarina of Time 3D with use of the c-stick, just like Majora's Mask 3D.
 
-This project is still a WIP with 4 main features planned but not implemented:
-* Options to invert the axes
-* Sensitivity options
+This project is still a WIP with the following planned features:
+
 * Better floor detection (sometimes you're kicked out of free cam when you shouldn't be with the current system)
 * JP version support (although the patch files are there they will currently crash as soon as you enter free cam)
 
@@ -34,3 +33,11 @@ This project is still a WIP with 4 main features planned but not implemented:
 
 ### Citra Emulator
 * Right-click on OoT3D from the game list and select "Open Mods Location". Place the patch files ("code.ips" and "exheader.bin") there.
+
+### In Game Controls
+The free camera's settings can be adjusted with the following button combinations:
+
+* L + R + DPad Up/Down = Increase/Decrease Sensitivity
+* L + R + DPad Left/Right = Invert Axes (Neither, Just X, Just Y, Both)
+
+The selected setting will be displayed on the top screen in the upper left briefly after selecting it.
