@@ -825,9 +825,6 @@ typedef s32 (*Player_InBlockingCsMode_proc)(GlobalContext* globalCtx, Player* pl
 typedef s32 (*Camera_CheckWater_proc)(Camera* camera);
 #define Camera_CheckWater ((Camera_CheckWater_proc)0x2D06A0)
 
-typedef f32 (*BgCheck_EntityRaycastFloor5_proc)(GlobalContext* globalCtx, CollisionContext* colCtx, CollisionPoly** floorPoly, s16* bgId, Player* player, Vec3f* playerPos);
-#define BgCheck_EntityRaycastFloor5 ((BgCheck_EntityRaycastFloor5_proc)0x316C18)
-
 typedef void (*Camera_UpdateInterface_proc)(u32 flags);
 #define Camera_UpdateInterface ((Camera_UpdateInterface_proc)0x330D84)
 
