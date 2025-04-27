@@ -23,22 +23,23 @@ void before_GlobalContext_Update(GlobalContext* globalCtx) {
     }
     Input_Update();
 
-    if (rInputCtx.cur.l && rInputCtx.cur.r) {
-        if (rInputCtx.pressed.d_up && spdOpt < 6) {
+    u32 held = rInputCtx.cur.val, pressed = rInputCtx.pressed.val;
+    if ((held & BUTTON_L1) && (held && BUTTON_R1)) {
+        if ((pressed & BUTTON_UP) && spdOpt < 6) {
             spdOpt++;
             alertSpd = 30;
         }
-        if (rInputCtx.pressed.d_down && spdOpt) {
+        if ((pressed & BUTTON_DOWN) && spdOpt) {
             spdOpt--;
             alertSpd = 30;
         }
         speed = speeds[spdOpt];
 
-        if (rInputCtx.pressed.d_left) {
+        if (pressed & BUTTON_LEFT) {
             controls--;
             alertCtr = 30;
         }
-        if (rInputCtx.pressed.d_right) {
+        if (pressed & BUTTON_RIGHT) {
             controls++;
             alertCtr = 30;
         }

@@ -3,7 +3,9 @@ This project allows new 3DS systems and Citra to control the camera in The Legen
 
 This project is still a WIP with the following planned features:
 
-* JP version support (although the patch files are there they will currently crash as soon as you enter free cam)
+* Further version support (KOR/TWN)
+* Improved UI & retained settings
+* Improved collision checks
 
 # Shoutouts
 * Shoutouts to gamestabled for creating the practice patch and randomizer projects this shamelessly steals from
@@ -21,11 +23,11 @@ This project is still a WIP with the following planned features:
 * Install a recent build of Luma3DS. If you already have Luma3DS, you can upgrade by simply replacing "boot.firm" at the root of your SD card.
 * Place the patch files ("code.ips" and "exheader.bin") in the following folder (you may need to create the folder):
 
-| Version | Location | Notes |
-|---|---|---|
-| USA | /luma/titles/0004000000033500 | |
-| JP  | /luma/titles/0004000000033400 | WIP - will crash |
-| EUR | /luma/titles/0004000000033600 | |
+| Version | Location |
+|---|---|
+| USA | /luma/titles/0004000000033500 |
+| JP  | /luma/titles/0004000000033400 |
+| EUR | /luma/titles/0004000000033600 |
 
 * Hold Select while powering on the console to launch the Luma3DS menu. Turn on "Enable game patching". You should only need to do this once, unless if you disable game patching in the future.
 * It should work now! If not, you likely need to use a different version of Luma3DS.

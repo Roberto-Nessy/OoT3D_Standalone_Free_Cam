@@ -31,10 +31,11 @@ SECTIONS
 		__text_start = . ;
 		*(.text)
 		*(.text.*)
+		__text_end  = . ;
 		*(.rodata)
+		*(.rodata.*)
 		*(.data)
 		*(.bss)
 		*(COMMON)
-		__text_end  = . ;
 	}
 }
