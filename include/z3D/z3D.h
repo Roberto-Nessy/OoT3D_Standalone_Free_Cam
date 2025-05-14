@@ -210,7 +210,7 @@ _Static_assert(sizeof(GlobalContext) == 0x5F14, "Global Context size");
     #define ADDR(locUSA) (\
         ((locUSA) < 0x41A144) ? (locUSA) : \
         ((locUSA) < 0x436690) ? (locUSA) + 0x24 : \
-        ((locUSA) < 0x4A5B00) ? (locUSA) + 20 : (locUSA))
+        ((locUSA) < 0x4A5B00) ? (locUSA) + 0x20 : (locUSA))
 #else
     #define ADDR(locUSA) (locUSA)
 #endif
