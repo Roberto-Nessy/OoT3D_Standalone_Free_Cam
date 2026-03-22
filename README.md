@@ -1,5 +1,13 @@
+# Personal Notes (CPP)
+
+Thanks to the incredible work of the OoT3D and Nintendo 3DS homebrew community, I was able to create a game patch that enables input support for the Circle Pad Pro, making it compatible with a game that does not originally support this accessory.
+
+I reused code from [Skyfloogle](https://github.com/skyfloogle/red-viper/blob/master/source/3ds/cpp.c) to handle Circle Pad Pro inputs and integrated it into this [patch](https://github.com/Roberto-Nessy/OoT3D_Standalone_Free_Cam). However, it required modifications because, in the context of a patch, dynamic memory allocation (heap) is not possible since the heap is already used by the game itself. Once I understood this, I adapted the implementation to allocate the thread stack statically instead.
+
+I hope this is just the beginning, and that it will lead to more patches for other games in the future, helping expand the list of titles compatible with the Circle Pad Pro.
+
 # OoT3D Free Cam
-This project allows new 3DS systems and Citra to control the camera in The Legend of Zelda: Ocarina of Time 3D with use of the c-stick, just like Majora's Mask 3D.
+This project allows 3DS(old and new) systems and Citra to control the camera in The Legend of Zelda: Ocarina of Time 3D with use of the c-stick or the Circle Pad Pro, just like Majora's Mask 3D.
 
 This project is still a WIP with the following planned features:
 
@@ -42,3 +50,7 @@ The free camera's settings can be adjusted with the following button combination
 * L + R + DPad Left/Right = Invert Axes (Neither, Just X, Just Y, Both)
 
 The selected setting will be displayed on the top screen in the upper left briefly after selecting it.
+
+#### With Circle Pad Pro
+
+Press ZR to connect the Circle Pad Pro to the 3ds.
