@@ -21,4 +21,6 @@ u8 IsInGame(void);
 u8 IsInGameOrBossChallenge(void);
 void CitraPrint(const char*, ...);
 
+extern bool new3dsFlag;
+
 #endif //_COMMON_H_

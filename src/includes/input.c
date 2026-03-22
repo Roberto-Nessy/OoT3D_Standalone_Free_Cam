@@ -5,6 +5,8 @@
 #include "3ds/svc.h"
 #include "utils.h"
 #include "3ds/types.h"
+#include "cpp.h"
+#include "common.h"
 
 #define HID_PAD (real_hid.pad.pads[real_hid.pad.index].curr.val)
 
@@ -12,6 +14,15 @@ InputContext rInputCtx;
 
 void Input_Update(void) {
     rInputCtx.cur.val      = real_hid.pad.pads[real_hid.pad.index].curr.val;
+    //extern variable -> see common.h
+    if(new3dsFlag){
+        irrstScanInput();
+        irrstCstickRead(&(rInputCtx.cStick));
+    }
+    else {
+        rInputCtx.cur.val |= cppKeysHeld();
+        cppCircleRead(&(rInputCtx.cStick));
+    }
     rInputCtx.pressed.val  = (rInputCtx.cur.val) & (~rInputCtx.old.val);
     rInputCtx.up.val       = (~rInputCtx.cur.val) & (rInputCtx.old.val);
     rInputCtx.old.val      = rInputCtx.cur.val;
@@ -20,8 +31,6 @@ void Input_Update(void) {
     rInputCtx.touchPressed = real_hid.touch.touches[real_hid.touch.index].updated && !rInputCtx.touchHeld;
     rInputCtx.touchHeld    = real_hid.touch.touches[real_hid.touch.index].updated;
 
-    irrstScanInput();
-    irrstCstickRead(&(rInputCtx.cStick));
 }
 
 u32 buttonCheck(u32 key) {
