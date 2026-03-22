@@ -4,6 +4,8 @@
 #include "common.h"
 #include "input.h"
 #include "draw.h"
+#include "cpp.h"
+#include "3ds/services/apt.h"
 
 #define GyroDrawHUDIcon *(u8*)0x4FC648
 s16 pitch = 0, yaw = 0;
@@ -11,12 +13,15 @@ f32 dist = 0;
 u8 spdOpt = 3, speed = 6, controls = 0, alertSpd = 0, alertCtr = 0;
 u8 speeds[] = { 2, 3, 4, 6, 8, 12, 16 };
 GlobalContext* gGlobalContext;
+bool new3dsFlag;//extern variable -> see common.h
 
 void before_GlobalContext_Update(GlobalContext* globalCtx) {
     static u8 init = 0;
     if (!init) {
         srvInit();
-        irrstInit();
+        APT_CheckNew3DS(&new3dsFlag);
+        if (new3dsFlag) irrstInit();
+        else cppInit();
         gGlobalContext = globalCtx;
         Draw_SetupFramebuffer();
         init = 1;
