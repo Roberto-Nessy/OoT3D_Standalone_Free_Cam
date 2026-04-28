@@ -6,6 +6,9 @@ I reused code from [Skyfloogle](https://github.com/skyfloogle/red-viper/blob/mas
 
 I hope this is just the beginning, and that it will lead to more patches for other games in the future, helping expand the list of titles compatible with the Circle Pad Pro.
 
+### Demo: click to see the full video
+[![Demo](demoCPP.gif)](https://www.youtube.com/watch?v=Ai_3MEJ3sHk)
+
 # OoT3D Free Cam
 This project allows 3DS(old and new) systems and Citra to control the camera in The Legend of Zelda: Ocarina of Time 3D with use of the c-stick or the Circle Pad Pro, just like Majora's Mask 3D.
 
