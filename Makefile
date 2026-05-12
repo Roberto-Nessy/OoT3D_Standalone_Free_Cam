@@ -90,6 +90,35 @@ ifneq ($(citra), 0)
 endif
 
 #---------------------------------------------------------------------------------
+# Input remapping definition: RSTICK is enabled by default with no flags,
+# otherwise multiple input options can be combined if needed
+#---------------------------------------------------------------------------------
+
+touchscreen ?= 0
+dpad ?= 0
+rstick ?= auto
+
+ifneq ($(touchscreen), 0)
+	CFLAGS += -DTOUCHSCREEN
+endif
+
+ifneq ($(dpad), 0)
+	CFLAGS += -DDPAD
+endif
+
+ifeq ($(rstick), 1)
+	CFLAGS += -DRSTICK
+endif
+
+ifeq ($(rstick), auto)
+	ifeq ($(touchscreen), 0)
+		ifeq ($(dpad), 0)
+			CFLAGS += -DRSTICK
+		endif
+	endif
+endif
+
+#---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
 # include and lib
 #---------------------------------------------------------------------------------

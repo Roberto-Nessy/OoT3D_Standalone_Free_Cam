@@ -14,6 +14,7 @@ InputContext rInputCtx;
 
 void Input_Update(void) {
     rInputCtx.cur.val      = real_hid.pad.pads[real_hid.pad.index].curr.val;
+    #ifdef RSTICK
     //extern variable -> see common.h
     if(new3dsFlag){
         irrstScanInput();
@@ -23,6 +24,7 @@ void Input_Update(void) {
         rInputCtx.cur.val |= cppKeysHeld();
         cppCircleRead(&(rInputCtx.cStick));
     }
+    #endif
     rInputCtx.pressed.val  = (rInputCtx.cur.val) & (~rInputCtx.old.val);
     rInputCtx.up.val       = (~rInputCtx.cur.val) & (rInputCtx.old.val);
     rInputCtx.old.val      = rInputCtx.cur.val;

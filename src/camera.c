@@ -8,20 +8,26 @@
 #include "3ds/services/apt.h"
 
 #define GyroDrawHUDIcon *(u8*)0x4FC648
-s16 pitch = 0, yaw = 0;
-f32 dist = 0;
-u8 spdOpt = 3, speed = 6, controls = 0, alertSpd = 0, alertCtr = 0;
-u8 speeds[] = { 2, 3, 4, 6, 8, 12, 16 };
-GlobalContext* gGlobalContext;
+static s16 pitch = 0, yaw = 0;
+static f32 dist = 0;
+static u8 spdOpt = 3, speed = 6, controls = 0, alertSpd = 0, alertCtr = 0;
+static u8 speeds[] = { 2, 3, 4, 6, 8, 12, 16 };
+static GlobalContext* gGlobalContext;
+#ifdef RSTICK
+static u8 alertCpp = 0;
 bool new3dsFlag;//extern variable -> see common.h
+static bool cppActivateFlag = true;
+#endif
 
 void before_GlobalContext_Update(GlobalContext* globalCtx) {
     static u8 init = 0;
     if (!init) {
         srvInit();
+        #ifdef RSTICK
         APT_CheckNew3DS(&new3dsFlag);
         if (new3dsFlag) irrstInit();
         else cppInit();
+        #endif
         gGlobalContext = globalCtx;
         Draw_SetupFramebuffer();
         init = 1;
@@ -29,7 +35,7 @@ void before_GlobalContext_Update(GlobalContext* globalCtx) {
     Input_Update();
 
     u32 held = rInputCtx.cur.val, pressed = rInputCtx.pressed.val;
-    if ((held & BUTTON_L1) && (held && BUTTON_R1)) {
+    if ((held & BUTTON_L1) && (held & BUTTON_R1)) {
         if ((pressed & BUTTON_UP) && spdOpt < 6) {
             spdOpt++;
             alertSpd = 30;
@@ -50,6 +56,17 @@ void before_GlobalContext_Update(GlobalContext* globalCtx) {
         }
         controls &= 3;
     }
+    #ifdef RSTICK
+    // Allows Old 3DS users to disable the CPP, as it may cause interference when unplugged.
+    if (!new3dsFlag){
+        if ((held & BUTTON_L1) && (held & BUTTON_R1) && (pressed & BUTTON_SELECT)) {
+            if(cppActivateFlag) cppExit();
+            else cppInit();
+            cppActivateFlag= !cppActivateFlag;
+            alertCpp = 30;
+        }
+    }
+    #endif
 }
 
 void after_GlobalContext_Update(GlobalContext* globalCtx) {
@@ -97,6 +114,12 @@ void after_GlobalContext_Update(GlobalContext* globalCtx) {
                 break;
         }
     }
+    #ifdef RSTICK
+    if (alertCpp){
+        alertCpp--;
+        Draw_DrawFormattedStringTop(10, alertSpd ? (alertCtr ? 30 : 20) : (alertCtr ? 20 : 10), COLOR_WHITE, cppActivateFlag ? "CPP Enabled" : "CPP Disabled");
+    }
+    #endif
 }
 
 f32 sins(u16 angle) {
@@ -250,10 +273,40 @@ u8 Camera_FreeCamEnabled(Camera* camera) {
         yaw   = camera->camDir.y;
     }
 
+    #ifdef RSTICK
     // Deadzone of 30 units
     if (rInputCtx.cStick.dx * rInputCtx.cStick.dx + rInputCtx.cStick.dy * rInputCtx.cStick.dy > 900) {
         freeCamEnabled = 1;
     }
+    #endif
+
+    #ifdef DPAD
+    if (rInputCtx.cur.d_left || rInputCtx.cur.d_right || rInputCtx.cur.d_up || rInputCtx.cur.d_down) {
+        freeCamEnabled = 1;
+    }
+    #endif
+
+    #ifdef TOUCHSCREEN
+    static int lastTouchX = 0;
+    static int lastTouchY = 0;
+    static int touching = 0;
+    if (rInputCtx.touchX <= 260 && rInputCtx.touchX >= 60 && rInputCtx.touchY <= 200 && rInputCtx.touchY >= 30) {
+        if (!touching) {
+            lastTouchX = rInputCtx.touchX;
+            lastTouchY = rInputCtx.touchY;
+            touching = 1;
+        }
+        int deltaX = rInputCtx.touchX - lastTouchX;
+        int deltaY = lastTouchY - rInputCtx.touchY;
+        //deadzone of 5 px
+        if (deltaX > 5 || deltaX < -5 || deltaY > 5 || deltaY < -5) {
+            freeCamEnabled = 1;
+        }
+        lastTouchX = rInputCtx.touchX;
+        lastTouchY = rInputCtx.touchY;
+    }
+    else touching = 0;
+    #endif
 
     // Titlescreen or cutscene or no player or targeting or first person or cutscene or horse or crawlspace or special
     // camera state/setting (MK balcony, chu bowling, static, rotating, hedge maze, GF cells, shops, back alley)
@@ -288,12 +341,46 @@ void Camera_FreeCamUpdate(Vec3s* out, Camera* camera) {
         camera->playerPosRot = camera->player->actor.world;
         at = eye.pos = camera->playerPosRot.pos;
         at.y = eye.pos.y += ((gSaveContext.linkAge) ? 38 : 50) * ((camera->player->stateFlags1 & 0x00002000) ? 0.5 : 1);
-
+        
+        #ifdef DPAD
+        if (rInputCtx.cur.d_left) yaw -= -150 * speed * (((controls & 1) ^ gSaveContext.masterQuestFlag) ? -1 : 1);
+        if (rInputCtx.cur.d_right) yaw -= 150 * speed * (((controls & 1) ^ gSaveContext.masterQuestFlag) ? -1 : 1);
+        if (rInputCtx.cur.d_up) pitch = Clamp(pitch + 100 * speed * ((controls & 2) ? -1 : 1));
+        if (rInputCtx.cur.d_down) pitch = Clamp(pitch + (-100) * speed * ((controls & 2) ? -1 : 1));
+        #endif
+        #ifdef TOUCHSCREEN
+        static float touchVelX = 0.0f;
+        static float touchVelY = 0.0f;
+        static int lastTouchX = 0;
+        static int lastTouchY = 0;
+        static int touching = 0;
+        if (rInputCtx.touchX <= 260 && rInputCtx.touchX >= 60 && rInputCtx.touchY <= 200 && rInputCtx.touchY >= 30) {
+            if (!touching) {
+                lastTouchX = rInputCtx.touchX;
+                lastTouchY = rInputCtx.touchY;
+                touching = 1;
+            }
+            int deltaX = rInputCtx.touchX - lastTouchX;
+            int deltaY = lastTouchY - rInputCtx.touchY;
+            //deadzone of 5 px
+            if (deltaX > 5 || deltaX < -5) touchVelX = deltaX * 6.0f;
+            if (deltaY > 5 || deltaY < -5) touchVelY = deltaY * 3.0f;
+            lastTouchX = rInputCtx.touchX;
+            lastTouchY = rInputCtx.touchY;
+        }
+        else touching = 0;
+        yaw -= touchVelX * speed * (((controls & 1) ^ gSaveContext.masterQuestFlag) ? -1 : 1);
+        pitch = Clamp(pitch + touchVelY * speed * ((controls & 2) ? -1 : 1));
+        touchVelX *= 0.90f;
+        touchVelY *= 0.85f;
+        #endif
+        #ifdef RSTICK
         if (rInputCtx.cStick.dx * rInputCtx.cStick.dx + rInputCtx.cStick.dy * rInputCtx.cStick.dy > 900) {
             // Invert X input in mirror world
             yaw -= rInputCtx.cStick.dx * speed * (((controls & 1) ^ gSaveContext.masterQuestFlag) ? -1 : 1);
             pitch = Clamp(pitch + rInputCtx.cStick.dy * speed * ((controls & 2) ? -1 : 1));
         }
+        #endif
 
         // Set intended camera position
         dist = lerpf(dist, ((gSaveContext.linkAge) ? 150 : 200) - 50 * sins(pitch), 0.5);
