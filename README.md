@@ -43,7 +43,7 @@ This project still lacks several features that may be added in the future.
 - touchscreen
 
 > [!CAUTION]
-> Please don't choose a rightstick patch if you are using an Old 3DS without a Circle Pad Pro, as it may cause infrared interference and audio crackling. 
+> Do not choose a rightstick patch if you are using an Old 3DS without a Circle Pad Pro, as it may cause audio crackling due to infrared interference. 
 
 ### 3DS
 * Install a recent build of Luma3DS. If you already have Luma3DS, you can upgrade by simply replacing ```boot.firm``` at the root of your SD card.
@@ -78,3 +78,8 @@ Press ZR to connect the Circle Pad Pro to the 3DS, and make sure it has enough b
 > [!WARNING]
 > The game's audio may crackle when the Circle Pad Pro is not connected due to infrared interference.
 > To avoid that, Press **L + R + Select** to disable Circle Pad Pro support when it is not in use.
+
+# Build
+
+Use the ```makeAll.sh``` script to build all the patches: ```sh makeAll.sh```.
+You can specify a region (EUR, JP, USA): ```sh makeAll.sh USA```.
