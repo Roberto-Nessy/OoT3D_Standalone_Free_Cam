@@ -12,42 +12,7 @@ u8 spdOpt = 3, speed = 6, controls = 0, alertSpd = 0, alertCtr = 0;
 u8 speeds[] = { 2, 3, 4, 6, 8, 12, 16 };
 GlobalContext* gGlobalContext;
 
-void before_GlobalContext_Update(GlobalContext* globalCtx) {
-    static u8 init = 0;
-    if (!init) {
-        srvInit();
-        irrstInit();
-        gGlobalContext = globalCtx;
-        Draw_SetupFramebuffer();
-        init = 1;
-    }
-    Input_Update();
-
-    u32 held = rInputCtx.cur.val, pressed = rInputCtx.pressed.val;
-    if ((held & BUTTON_L1) && (held && BUTTON_R1)) {
-        if ((pressed & BUTTON_UP) && spdOpt < 6) {
-            spdOpt++;
-            alertSpd = 30;
-        }
-        if ((pressed & BUTTON_DOWN) && spdOpt) {
-            spdOpt--;
-            alertSpd = 30;
-        }
-        speed = speeds[spdOpt];
-
-        if (pressed & BUTTON_LEFT) {
-            controls--;
-            alertCtr = 30;
-        }
-        if (pressed & BUTTON_RIGHT) {
-            controls++;
-            alertCtr = 30;
-        }
-        controls &= 3;
-    }
-}
-
-void after_GlobalContext_Update(GlobalContext* globalCtx) {
+void displayHUD(void) {
     if (alertCtr) {
         alertCtr--;
         switch (controls) {
@@ -92,6 +57,47 @@ void after_GlobalContext_Update(GlobalContext* globalCtx) {
                 break;
         }
     }
+}
+
+void before_GlobalContext_Update(GlobalContext* globalCtx) {
+    static u8 init = 0;
+    if (!init) {
+        srvInit();
+        irrstInit();
+        gGlobalContext = globalCtx;
+        Draw_SetupFramebuffer();
+        init = 1;
+    }
+    Input_Update();
+
+    u32 held = rInputCtx.cur.val, pressed = rInputCtx.pressed.val;
+    if ((held & BUTTON_L1) && (held && BUTTON_R1)) {
+        if ((pressed & BUTTON_UP) && spdOpt < 6) {
+            spdOpt++;
+            alertSpd = 30;
+        }
+        if ((pressed & BUTTON_DOWN) && spdOpt) {
+            spdOpt--;
+            alertSpd = 30;
+        }
+        speed = speeds[spdOpt];
+
+        if (pressed & BUTTON_LEFT) {
+            controls--;
+            alertCtr = 30;
+        }
+        if (pressed & BUTTON_RIGHT) {
+            controls++;
+            alertCtr = 30;
+        }
+        controls &= 3;
+    }
+    
+    displayHUD();
+}
+
+void after_GlobalContext_Update(GlobalContext* globalCtx) {
+    displayHUD();
 }
 
 f32 sins(u16 angle) {
@@ -333,6 +339,7 @@ void Camera_FreeCamUpdate(Vec3s* out, Camera* camera) {
             if (newSetting != camera->setting) {
                 camera->prevSetting = camera->setting;
                 camera->setting     = newSetting;
+                camera->mode        = 0; // TODO: calculate mode properly, using default for now as applies to all settings
             }
         }
     }
