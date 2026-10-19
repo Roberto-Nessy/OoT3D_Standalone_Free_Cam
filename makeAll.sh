@@ -27,3 +27,8 @@ make clean
 make -j REGION=USA
 echo Moving to ./Patch Files/USA/3DS/code.ips
 mv code.ips "./Patch Files/USA/3DS/code.ips"
+
+make clean
+make -j REGION=TW citra=1
+echo Moving to ./Patch Files/TW/Citra/code.ips
+mv code.ips "./Patch Files/TW/Citra/code.ips"

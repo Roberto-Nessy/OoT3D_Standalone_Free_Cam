@@ -3,7 +3,7 @@ This project allows new 3DS systems and Citra to control the camera in The Legen
 
 This project is still a WIP with the following planned features:
 
-* Further version support (KOR/TWN)
+* Further version support (KOR, and TWN on 3DS)
 * Improved UI & retained settings
 * Improved collision checks
 
@@ -18,7 +18,7 @@ This project is still a WIP with the following planned features:
 * Shoutouts to the whole OoT3DR dev team for being cool people and the community for keeping me motivated
 
 # How to Use:
-* Find the patch files inside the "Patch Files" folder in this repository. They're divided by regional version of OoT3D (USA/EUR/JP) and by platform (3DS/Citra), so choose the correct ones.
+* Find the patch files inside the "Patch Files" folder in this repository. They're divided by regional version of OoT3D (USA/EUR/JP/TW) and by platform (3DS/Citra), so choose the correct ones. The Taiwan version (TW) only has Citra files for now.
 ### 3DS
 * Install a recent build of Luma3DS. If you already have Luma3DS, you can upgrade by simply replacing "boot.firm" at the root of your SD card.
 * Place the patch files ("code.ips" and "exheader.bin") in the following folder (you may need to create the folder):

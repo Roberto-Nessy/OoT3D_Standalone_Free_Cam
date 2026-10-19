@@ -4,6 +4,15 @@ import subprocess
 import sys
 
 elf = sys.argv[1]
+# Sections that start in [lo, hi), between the loader and the new code, are not patched.
+# The region comes from the Makefile. TW's loader (0x4CF3C4) is inside the USA range, so TW has its own.
+SKIP_RANGES = {
+    "USA": (0x4CA000, 0x5C7000),
+    "EUR": (0x4CA000, 0x5C7000),
+    "JP":  (0x4CA000, 0x5C7000),
+    "TW":  (0x4D0000, 0x5CE000),
+}
+skip_lo, skip_hi = SKIP_RANGES[sys.argv[2] if len(sys.argv) > 2 else "USA"]
 result = subprocess.run([os.environ["DEVKITARM"] + r'/bin/arm-none-eabi-objdump', '--section-headers', elf], stdout=subprocess.PIPE)
 lines = str(result.stdout).split('\\n')
 sectionsInfo = [line.split()[1:6] for line in lines if line.split() and line.split()[0].isdigit()]
@@ -17,7 +26,7 @@ ips = b'PATCH'
 with open(elf, 'rb') as e:
     for vaddr, offset, size in sections:
 
-        if vaddr >= 0x4CA000 and vaddr < 0x5C7000: #this is not good lol just trying to avoid __GNU_EH_FRAME_HDR section
+        if vaddr >= skip_lo and vaddr < skip_hi: #this is not good lol just trying to avoid __GNU_EH_FRAME_HDR section
             continue
 
         e.seek(offset, 0)
