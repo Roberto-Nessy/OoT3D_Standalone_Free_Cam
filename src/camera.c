@@ -71,7 +71,7 @@ void before_GlobalContext_Update(GlobalContext* globalCtx) {
     Input_Update();
 
     u32 held = rInputCtx.cur.val, pressed = rInputCtx.pressed.val;
-    if ((held & BUTTON_L1) && (held && BUTTON_R1)) {
+    if ((held & BUTTON_L1) && (held & BUTTON_R1)) {
         if ((pressed & BUTTON_UP) && spdOpt < 6) {
             spdOpt++;
             alertSpd = 30;
