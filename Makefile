@@ -41,22 +41,27 @@ INCLUDES    +=  assets
 USA         := USA
 EUR         := EUR
 JP          := JP
+TW          := TW
 REGION      := USA
 
 ifeq ($(USA), $(REGION))
   LINK_SCRIPT 	:= oot.ld
-  ASFLAGS += -D _USA_=1 -D _JP_=0 -D _EUR_=0
+  ASFLAGS += -D _USA_=1 -D _JP_=0 -D _EUR_=0 -D _TW_=0
 endif
 ifeq ($(JP), $(REGION))
   LINK_SCRIPT 	:= oot_j.ld
-  ASFLAGS += -D _USA_=0 -D _JP_=1 -D _EUR_=0
+  ASFLAGS += -D _USA_=0 -D _JP_=1 -D _EUR_=0 -D _TW_=0
 endif
 ifeq ($(EUR), $(REGION))
   LINK_SCRIPT 	:= oot_e.ld
-  ASFLAGS += -D _USA_=0 -D _JP_=0 -D _EUR_=1
+  ASFLAGS += -D _USA_=0 -D _JP_=0 -D _EUR_=1 -D _TW_=0
+endif
+ifeq ($(TW), $(REGION))
+  LINK_SCRIPT 	:= oot_t.ld
+  ASFLAGS += -D _USA_=0 -D _JP_=0 -D _EUR_=0 -D _TW_=1
 endif
 
-VERFLAGS := -D USA=$(USA) -D JP=$(JP) -D EUR=$(EUR) -D REGION=$(REGION)
+VERFLAGS := -D USA=$(USA) -D JP=$(JP) -D EUR=$(EUR) -D TW=$(TW) -D REGION=$(REGION)
 
 ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=softfp -mtp=soft -mfpu=vfpv2
 
@@ -82,6 +87,9 @@ ifeq ($(REGION), $(JP))
 endif
 ifeq ($(REGION), $(EUR))
 	CFLAGS += -g -DVersion_EUR
+endif
+ifeq ($(REGION), $(TW))
+	CFLAGS += -g -DVersion_TW
 endif
 
 citra ?= 0
@@ -164,8 +172,8 @@ all: $(BUILD)
 $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
-	@if ! python3 patch.py $(OUTPUT).elf; then \
-		python patch.py $(OUTPUT).elf; \
+	@if ! python3 patch.py $(OUTPUT).elf $(REGION); then \
+		python patch.py $(OUTPUT).elf $(REGION); \
 	fi
 
 #---------------------------------------------------------------------------------

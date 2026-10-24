@@ -188,16 +188,29 @@ typedef struct GlobalContext {
 } GlobalContext; // size = 0x5F14 TODO
 _Static_assert(sizeof(GlobalContext) == 0x5F14, "Global Context size");
 
+#ifdef Version_TW
+#define gSaveContext (*(SaveContext*)0x00595FD0)
+#else
 #define gSaveContext (*(SaveContext*)0x00587958)
+#endif
 #define real_hid_addr 0x10002000
 #define real_hid (*(hid_mem_t*)real_hid_addr)
 
+#ifdef Version_TW
+#define Z3D_TOP_SCREEN_LEFT_1 0x1430A900
+#define Z3D_TOP_SCREEN_LEFT_2 0x14350E10
+#define Z3D_TOP_SCREEN_RIGHT_1 0x14407DD0
+#define Z3D_TOP_SCREEN_RIGHT_2 0x1444E2E0
+#define Z3D_BOTTOM_SCREEN_1 0x14397380
+#define Z3D_BOTTOM_SCREEN_2 0x143CF790
+#else
 #define Z3D_TOP_SCREEN_LEFT_1 0x14313890
 #define Z3D_TOP_SCREEN_LEFT_2 0x14359DA0
 #define Z3D_TOP_SCREEN_RIGHT_1 0x14410AD0
 #define Z3D_TOP_SCREEN_RIGHT_2 0x14456FE0
 #define Z3D_BOTTOM_SCREEN_1 0x143A02B0
 #define Z3D_BOTTOM_SCREEN_2 0x143D86C0
+#endif
 
 #ifdef Version_JP
     #define ADDR(locUSA) (\
@@ -211,6 +224,15 @@ _Static_assert(sizeof(GlobalContext) == 0x5F14, "Global Context size");
         ((locUSA) < 0x41A144) ? (locUSA) : \
         ((locUSA) < 0x436690) ? (locUSA) + 0x24 : \
         ((locUSA) < 0x4A5B00) ? (locUSA) + 0x20 : (locUSA))
+#elifdef Version_TW
+    // TW is a recompile, so the addresses used here are looked up one by one. Others give 0.
+    #define ADDR(locUSA) (\
+        ((locUSA) == 0x2D06A0) ? 0x2E29D4 : \
+        ((locUSA) == 0x330D84) ? 0x2E276C : \
+        ((locUSA) == 0x3553FC) ? 0x295D90 : \
+        ((locUSA) == 0x35B164) ? 0x316A48 : \
+        ((locUSA) == 0x4787C8) ? 0x159FC0 : \
+        ((locUSA) == 0x47BFD8) ? 0x15D958 : 0)
 #else
     #define ADDR(locUSA) (locUSA)
 #endif

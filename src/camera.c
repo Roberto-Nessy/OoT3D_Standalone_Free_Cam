@@ -5,7 +5,11 @@
 #include "input.h"
 #include "draw.h"
 
+#ifdef Version_TW
+#define GyroDrawHUDIcon *(u8*)0x508A30
+#else
 #define GyroDrawHUDIcon *(u8*)0x4FC648
+#endif
 s16 pitch = 0, yaw = 0;
 f32 dist = 0;
 u8 spdOpt = 3, speed = 6, controls = 0, alertSpd = 0, alertCtr = 0;
