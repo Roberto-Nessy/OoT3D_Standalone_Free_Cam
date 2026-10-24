@@ -346,6 +346,9 @@ void Camera_FreeCamUpdate(Vec3s* out, Camera* camera) {
                 camera->mode        = 0; // TODO: calculate mode properly, using default for now as applies to all settings
             }
         }
+        
+        // Update FoV, slowly return to a normal value if entered freecam while in an abnormal one
+        camera->globalCtx->view.fovY = camera->fov = lerpf(camera->fov, 55, 0.05);
     }
     return;
 }

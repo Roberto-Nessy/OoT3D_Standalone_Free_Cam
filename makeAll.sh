@@ -19,14 +19,19 @@ echo Moving to ./Patch Files/JP/Citra/code.ips
 mv code.ips "./Patch Files/JP/Citra/code.ips"
 
 make clean
+make -j REGION=USA
+echo Moving to ./Patch Files/USA/3DS/code.ips
+mv code.ips "./Patch Files/USA/3DS/code.ips"
+
+make clean
 make -j REGION=USA citra=1
 echo Moving to ./Patch Files/USA/Citra/code.ips
 mv code.ips "./Patch Files/USA/Citra/code.ips"
 
 make clean
-make -j REGION=USA
-echo Moving to ./Patch Files/USA/3DS/code.ips
-mv code.ips "./Patch Files/USA/3DS/code.ips"
+make -j REGION=TW
+echo Moving to ./Patch Files/TW/3DS/code.ips
+mv code.ips "./Patch Files/TW/3DS/code.ips"
 
 make clean
 make -j REGION=TW citra=1
